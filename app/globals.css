@@ -1,26 +1,187 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Design System - WellTech Hub */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  /* Base Colors */
+  --white: #FFFFFF;
+  --off-white: #FAFAF9;
+  --gray-50: #F7F7F5;
+  --gray-100: #E8E8E6;
+  --gray-200: #D4D4D1;
+  --gray-300: #A8A8A5;
+  --gray-400: #7C7C79;
+  --gray-500: #50504D;
+  --gray-600: #383836;
+  --gray-700: #242422;
+  --gray-800: #1A1A19;
+  --gray-900: #0F0F0E;
+
+  /* Wellbeing Accents (Sage) */
+  --sage-50: #F4F7F4;
+  --sage-100: #E3EAE3;
+  --sage-200: #C7D5C7;
+  --sage-300: #9BB39B;
+  --sage-400: #6F8F6F;
+  --sage-500: #5A7A5A;
+  --sage-600: #4A664A;
+  --sage-700: #3A523A;
+
+  /* Wealth/Performance Accents (Gold) */
+  --gold-50: #FFFBF0;
+  --gold-100: #FFF4D6;
+  --gold-200: #FFE9AD;
+  --gold-300: #FFDE84;
+  --gold-400: #FFD35B;
+  --gold-500: #FFC832;
+  --gold-600: #E6B42D;
+  --gold-700: #CC9F28;
+
+  /* Performance Accents (Orange) */
+  --orange-50: #FFF5F0;
+  --orange-100: #FFE6D6;
+  --orange-200: #FFCDAD;
+  --orange-300: #FFB484;
+  --orange-400: #FF9B5B;
+  --orange-500: #FF8232;
+  --orange-600: #E6752D;
+  --orange-700: #CC6828;
+
+  /* Tech Accents (Teal) */
+  --teal-50: #F0F7F7;
+  --teal-100: #D6EBEB;
+  --teal-200: #ADD7D7;
+  --teal-300: #84C3C3;
+  --teal-400: #5BAFAF;
+  --teal-500: #329B9B;
+  --teal-600: #2D8B8B;
+  --teal-700: #287B7B;
+
+  /* Semantic */
+  --success: var(--sage-500);
+  --warning: var(--gold-500);
+  --error: #DC2626;
+  --info: var(--teal-500);
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --white: #0F0F0E;
+    --off-white: #1A1A19;
+    --gray-50: #242422;
+    --gray-100: #383836;
+    --gray-200: #50504D;
+    --gray-300: #7C7C79;
+    --gray-400: #A8A8A5;
+    --gray-500: #D4D4D1;
+    --gray-600: #E8E8E6;
+    --gray-700: #F7F7F5;
+    --gray-800: #FAFAF9;
+    --gray-900: #FFFFFF;
   }
 }
 
+@theme inline {
+  --color-background: var(--white);
+  --color-foreground: var(--gray-900);
+  --color-sage: var(--sage-500);
+  --color-gold: var(--gold-500);
+  --color-orange: var(--orange-500);
+  --color-teal: var(--teal-500);
+  --font-sans: var(--font-sans);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--white);
+  color: var(--gray-900);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility Classes */
+.text-sage {
+  color: var(--sage-500);
+}
+
+.text-gold {
+  color: var(--gold-500);
+}
+
+.text-teal {
+  color: var(--teal-500);
+}
+
+.bg-sage {
+  background-color: var(--sage-500);
+}
+
+.bg-gold {
+  background-color: var(--gold-500);
+}
+
+.bg-teal {
+  background-color: var(--teal-500);
+}
+
+/* Smooth Transitions */
+* {
+  transition-property: color, background-color, border-color, transform, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Focus States */
+*:focus-visible {
+  outline: 2px solid var(--sage-500);
+  outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-in-95 {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.zoom-in-95 {
+  animation: zoom-in-95 0.2s ease-out;
+}
+
+.duration-200 {
+  animation-duration: 200ms;
 }
