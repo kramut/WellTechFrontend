@@ -213,7 +213,7 @@ export default function CandidatesPage() {
             Nessun candidato{filter !== 'all' ? ` con stato "${filter}"` : ''}
           </p>
           <p className="text-sm mt-1" style={{ color: 'var(--gray-400)' }}>
-            Inserisci link affiliate tramite l&apos;endpoint POST /api/product-candidates/bulk
+            Usa il pulsante &quot;Aggiungi Prodotti&quot; qui sopra per inserire nuovi link affiliate
           </p>
         </div>
       ) : (
