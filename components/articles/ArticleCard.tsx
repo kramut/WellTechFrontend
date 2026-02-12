@@ -8,10 +8,10 @@ interface ArticleCardProps {
     title: string;
     slug: string;
     category: string;
-    content?: string;
-    featuredImageUrl?: string;
-    views?: number;
-    publishedAt?: string;
+    content?: string | null;
+    featuredImageUrl?: string | null;
+    views?: number | null;
+    publishedAt?: string | null;
   };
   featured?: boolean;
   compact?: boolean;
@@ -66,7 +66,7 @@ export function ArticleCard({ article, featured = false, compact = false }: Arti
           {article.publishedAt && (
             <span>{new Date(article.publishedAt).toLocaleDateString('it-IT')}</span>
           )}
-          {article.views !== undefined && (
+          {article.views != null && (
             <span>{article.views} views</span>
           )}
         </div>
