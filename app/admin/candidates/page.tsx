@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '@/lib/api';
 import ProductCandidateCard from '@/components/admin/ProductCandidateCard';
+import AddCandidatesForm from '@/components/admin/AddCandidatesForm';
 
 type FilterStatus = 'all' | 'pending' | 'approved' | 'rejected' | 'content_generated';
 
@@ -153,6 +154,9 @@ export default function CandidatesPage() {
           </button>
         </div>
       </div>
+
+      {/* Add Candidates Form */}
+      <AddCandidatesForm onSuccess={fetchCandidates} />
 
       {/* Filters */}
       <div
