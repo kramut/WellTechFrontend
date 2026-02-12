@@ -135,9 +135,54 @@ export const api = {
   analytics: {
     getDashboard: () => apiRequest('/api/analytics/dashboard'),
   },
+
+  // Product Candidates
+  candidates: {
+    getAll: (params?: { status?: string; category?: string }) =>
+      apiRequest<any[]>('/api/product-candidates', { params }),
+    getById: (id: number) =>
+      apiRequest<any>(`/api/product-candidates/${id}`),
+    getAnalysis: (id: number) =>
+      apiRequest<any>(`/api/product-candidates/${id}/analysis`),
+    approve: (id: number, approvedBy?: string) =>
+      apiRequest<any>(`/api/product-candidates/${id}/approve`, {
+        method: 'POST',
+        body: JSON.stringify({ approvedBy: approvedBy || 'admin' }),
+      }),
+    reject: (id: number, rejectionReason: string) =>
+      apiRequest<any>(`/api/product-candidates/${id}/reject`, {
+        method: 'POST',
+        body: JSON.stringify({ rejectionReason }),
+      }),
+    analyze: (id: number) =>
+      apiRequest<any>(`/api/product-candidates/${id}/analyze`, {
+        method: 'POST',
+      }),
+    analyzeAll: () =>
+      apiRequest<any>('/api/product-candidates/analyze-all', {
+        method: 'POST',
+      }),
+    generateContent: (id: number) =>
+      apiRequest<any>(`/api/product-candidates/${id}/generate-content`, {
+        method: 'POST',
+      }),
+    generateArticle: (id: number) =>
+      apiRequest<any>(`/api/product-candidates/${id}/generate-article`, {
+        method: 'POST',
+      }),
+    generateVideo: (id: number) =>
+      apiRequest<any>(`/api/product-candidates/${id}/generate-video`, {
+        method: 'POST',
+      }),
+    delete: (id: number) =>
+      apiRequest(`/api/product-candidates/${id}`, {
+        method: 'DELETE',
+      }),
+  },
 };
 
 export default api;
+
 
 
 
