@@ -192,8 +192,30 @@ export default function ProductCandidateCard({
         </div>
       )}
 
-      {/* Content generated info */}
-      {candidate.metadata?.articleId && (
+      {/* Approved product info */}
+      {candidate.metadata?.productId && (
+        <div
+          className="rounded-lg p-3 mb-3 text-xs space-y-1"
+          style={{ background: 'var(--sage-50)', border: '1px solid var(--sage-200)' }}
+        >
+          <div className="flex items-center gap-2">
+            <span className="font-semibold" style={{ color: 'var(--sage-700)' }}>
+              Prodotto #{candidate.metadata.productId} creato
+            </span>
+            {candidate.metadata.articlePublished && (
+              <span
+                className="px-1.5 py-0.5 rounded text-[10px] font-medium"
+                style={{ background: 'var(--sage-200)', color: 'var(--sage-700)' }}
+              >
+                Articolo pubblicato
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Content generated info (pre-approval) */}
+      {candidate.metadata?.articleId && !candidate.metadata?.productId && (
         <div
           className="rounded-lg p-2 mb-3 text-xs flex items-center gap-2"
           style={{ background: 'var(--teal-50)', border: '1px solid var(--teal-100)' }}

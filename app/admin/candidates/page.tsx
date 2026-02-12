@@ -39,8 +39,9 @@ export default function CandidatesPage() {
 
   const handleApprove = async (id: number) => {
     try {
-      await api.candidates.approve(id);
-      showToast('Candidato approvato!');
+      const result = await api.candidates.approve(id) as any;
+      const msg = result.message || 'Candidato approvato!';
+      showToast(msg);
       fetchCandidates();
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Errore', 'error');
