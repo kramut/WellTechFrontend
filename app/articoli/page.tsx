@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArticleCard } from '@/components/articles/ArticleCard';
+import { mockArticles } from '@/lib/mockData';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -9,24 +10,38 @@ interface Article {
   slug: string;
   category: string;
   content: string;
-  seoMetaDescription: string | null;
-  featuredImageUrl: string | null;
-  publishedAt: string | null;
-  views: number;
+  seoMetaDescription?: string | null;
+  featuredImageUrl?: string | null;
+  publishedAt?: string | null;
+  views?: number | null;
 }
 
 async function getPublishedArticles(): Promise<Article[]> {
+  // Fetch real articles from API
+  let apiArticles: Article[] = [];
   try {
     const res = await fetch(`${API_BASE_URL}/api/articles`, {
-      next: { revalidate: 60 }, // Revalidate every 60 seconds
+      next: { revalidate: 60 },
     });
-    if (!res.ok) return [];
-    const articles: Article[] = await res.json();
-    // Filter only published articles
-    return articles.filter((a) => a.publishedAt);
+    if (res.ok) {
+      const data: Article[] = await res.json();
+      apiArticles = data.filter((a) => a.publishedAt);
+    }
   } catch {
-    return [];
+    // API not available, continue with mock only
   }
+
+  // Add mock articles with offset IDs to avoid conflicts
+  const mockOffset = 10000;
+  const mockAsArticles: Article[] = mockArticles.map((m) => ({
+    ...m,
+    id: m.id + mockOffset,
+    seoMetaDescription: m.seoMetaDescription || null,
+    featuredImageUrl: m.featuredImageUrl || null,
+  }));
+
+  // Real articles first, then mock
+  return [...apiArticles, ...mockAsArticles];
 }
 
 export default async function ArticlesPage() {

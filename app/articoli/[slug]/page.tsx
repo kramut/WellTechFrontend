@@ -4,6 +4,7 @@ import { use, useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
+import { mockArticles, mockProducts } from '@/lib/mockData';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -13,13 +14,13 @@ interface Article {
   slug: string;
   category: string;
   content: string;
-  seoMetaTitle: string | null;
-  seoMetaDescription: string | null;
-  featuredImageUrl: string | null;
-  productIds: number[];
-  publishedAt: string | null;
-  createdAt: string;
-  views: number;
+  seoMetaTitle?: string | null;
+  seoMetaDescription?: string | null;
+  featuredImageUrl?: string | null;
+  productIds?: number[];
+  publishedAt?: string | null;
+  createdAt?: string;
+  views?: number;
   videos?: { id: number; title: string; videoUrl: string | null }[];
 }
 
@@ -27,7 +28,7 @@ interface Product {
   id: number;
   name: string;
   description: string | null;
-  price: string | null;
+  price: string | number | null;
   affiliateLink: string;
   imageUrl: string | null;
 }
@@ -41,28 +42,48 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
 
   useEffect(() => {
     async function load() {
+      // Try real API first
       try {
         const res = await fetch(`${API_BASE_URL}/api/articles/slug/${resolvedParams.slug}`);
-        if (!res.ok) {
-          setNotFoundState(true);
+        if (res.ok) {
+          const data = await res.json();
+          setArticle(data);
+
+          // Load recommended products from API
+          if (data.productIds && data.productIds.length > 0) {
+            const productPromises = data.productIds.map((id: number) =>
+              fetch(`${API_BASE_URL}/api/products/${id}`).then((r) => r.ok ? r.json() : null)
+            );
+            const loadedProducts = (await Promise.all(productPromises)).filter(Boolean);
+            setProducts(loadedProducts);
+          }
+          setLoading(false);
           return;
         }
-        const data = await res.json();
-        setArticle(data);
-
-        // Load recommended products
-        if (data.productIds && data.productIds.length > 0) {
-          const productPromises = data.productIds.map((id: number) =>
-            fetch(`${API_BASE_URL}/api/products/${id}`).then((r) => r.ok ? r.json() : null)
-          );
-          const loadedProducts = (await Promise.all(productPromises)).filter(Boolean);
-          setProducts(loadedProducts);
-        }
       } catch {
-        setNotFoundState(true);
-      } finally {
-        setLoading(false);
+        // API failed, fall through to mock
       }
+
+      // Fallback: try mock data
+      const mockArticle = mockArticles.find((a) => a.slug === resolvedParams.slug);
+      if (mockArticle) {
+        setArticle(mockArticle as Article);
+        // Load mock products
+        if (mockArticle.productIds && mockArticle.productIds.length > 0) {
+          const relatedProducts = mockProducts
+            .filter((p) => mockArticle.productIds.includes(p.id))
+            .map((p) => ({
+              ...p,
+              description: p.description || null,
+              price: p.price,
+              imageUrl: p.imageUrl || null,
+            }));
+          setProducts(relatedProducts);
+        }
+      } else {
+        setNotFoundState(true);
+      }
+      setLoading(false);
     }
     load();
   }, [resolvedParams.slug]);
