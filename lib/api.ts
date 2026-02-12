@@ -107,6 +107,16 @@ export const api = {
       apiRequest(`/api/videos/${id}`, {
         method: 'DELETE',
       }),
+    render: (id: number) =>
+      apiRequest<any>(`/api/videos/${id}/render-and-wait`, {
+        method: 'POST',
+      }),
+    renderAsync: (id: number) =>
+      apiRequest<any>(`/api/videos/${id}/render`, {
+        method: 'POST',
+      }),
+    renderStatus: (id: number, renderId: string) =>
+      apiRequest<any>(`/api/videos/${id}/render-status/${renderId}`),
   },
 
   // Affiliate Earnings

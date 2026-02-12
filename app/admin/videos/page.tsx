@@ -22,6 +22,7 @@ export default function VideosPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editScript, setEditScript] = useState('');
   const [editTitle, setEditTitle] = useState('');
+  const [renderingId, setRenderingId] = useState<number | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
@@ -62,6 +63,24 @@ export default function VideosPage() {
       fetchVideos();
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Errore salvataggio', 'error');
+    }
+  };
+
+  const handleRender = async (id: number) => {
+    try {
+      setRenderingId(id);
+      showToast('Rendering video in corso... (fino a 2 min)');
+      const result = await api.videos.render(id);
+      if (result.success) {
+        showToast('Video renderizzato con successo!');
+        fetchVideos();
+      } else {
+        showToast(result.error || 'Errore rendering', 'error');
+      }
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Errore rendering', 'error');
+    } finally {
+      setRenderingId(null);
     }
   };
 
@@ -287,6 +306,29 @@ export default function VideosPage() {
                       >
                         Modifica
                       </button>
+                    )}
+
+                    {!video.videoUrl && (
+                      <button
+                        onClick={() => handleRender(video.id)}
+                        disabled={renderingId === video.id}
+                        className="text-xs px-3 py-1.5 rounded-lg font-semibold cursor-pointer disabled:opacity-50"
+                        style={{ background: 'var(--orange-100)', color: 'var(--orange-700)' }}
+                      >
+                        {renderingId === video.id ? 'Rendering...' : 'Renderizza Video'}
+                      </button>
+                    )}
+
+                    {video.videoUrl && (
+                      <a
+                        href={video.videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs px-3 py-1.5 rounded-lg font-medium no-underline"
+                        style={{ background: 'var(--sage-100)', color: 'var(--sage-700)' }}
+                      >
+                        Scarica MP4
+                      </a>
                     )}
 
                     <div className="flex-1" />
