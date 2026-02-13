@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { UserGoal, goalOptions, getPathForGoal } from '@/lib/pathfinder';
+import { UserGoal, goalOptions, getPathForGoal, PersonalizedPath } from '@/lib/pathfinder';
 import { PathfinderResults } from './PathfinderResults';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 interface PathfinderModalProps {
   isOpen: boolean;
@@ -11,12 +13,42 @@ interface PathfinderModalProps {
 
 export function PathfinderModal({ isOpen, onClose }: PathfinderModalProps) {
   const [selectedGoal, setSelectedGoal] = useState<UserGoal | null>(null);
+  const [currentPath, setCurrentPath] = useState<PersonalizedPath | null>(null);
   const [showResults, setShowResults] = useState(false);
+  const [loadingPath, setLoadingPath] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleGoalSelect = (goal: UserGoal) => {
+  const handleGoalSelect = async (goal: UserGoal) => {
     setSelectedGoal(goal);
+    setLoadingPath(true);
+
+    // Try to fetch path from API first
+    let path: PersonalizedPath | null = null;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/paths/${goal}`);
+      if (res.ok) {
+        const data = await res.json();
+        path = {
+          goal: data.goalId as UserGoal,
+          title: data.title,
+          description: data.description,
+          estimatedDuration: data.estimatedDuration,
+          color: data.color,
+          steps: data.steps,
+        };
+      }
+    } catch {
+      // Fall through to local
+    }
+
+    // Fallback to local hardcoded path
+    if (!path) {
+      path = getPathForGoal(goal);
+    }
+
+    setCurrentPath(path);
+    setLoadingPath(false);
     setShowResults(true);
   };
 
@@ -84,9 +116,16 @@ export function PathfinderModal({ isOpen, onClose }: PathfinderModalProps) {
                 </button>
               ))}
             </div>
-          ) : selectedGoal ? (
+          ) : loadingPath ? (
+            <div className="flex items-center justify-center py-16">
+              <div
+                className="inline-block w-8 h-8 border-3 border-t-transparent rounded-full animate-spin"
+                style={{ borderColor: 'var(--sage-300)', borderTopColor: 'transparent' }}
+              />
+            </div>
+          ) : currentPath ? (
             <PathfinderResults
-              path={getPathForGoal(selectedGoal)}
+              path={currentPath}
               onReset={handleReset}
             />
           ) : null}

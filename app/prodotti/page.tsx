@@ -1,19 +1,64 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ProductCard } from '@/components/products/ProductCard';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { mockProducts, getProductsByCategory } from '@/lib/mockData';
+import { mockProducts } from '@/lib/mockData';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 const categories = ['Wellbeing', 'Nutrition', 'Fitness', 'Mindset', 'Productivity', 'Wealth'];
+
+interface Product {
+  id: number;
+  name: string;
+  category: string;
+  description: string | null;
+  price: number | string | null;
+  affiliateLink: string;
+  imageUrl: string | null;
+  affiliateProgram: string | null;
+  commissionPercentage: number | string | null;
+}
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadProducts() {
+      let apiProducts: Product[] = [];
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/products`);
+        if (res.ok) {
+          apiProducts = await res.json();
+        }
+      } catch {
+        // API not available
+      }
+
+      // Merge: real API products first, then mock (with offset IDs)
+      const mockOffset = 10000;
+      const mockMapped: Product[] = mockProducts.map((m) => ({
+        ...m,
+        id: m.id + mockOffset,
+        description: m.description || null,
+        price: m.price,
+        imageUrl: m.imageUrl || null,
+        affiliateProgram: m.affiliateProgram || null,
+        commissionPercentage: m.commissionPercentage || null,
+      }));
+
+      setAllProducts([...apiProducts, ...mockMapped]);
+      setLoading(false);
+    }
+    loadProducts();
+  }, []);
+
   const filteredProducts = selectedCategory
-    ? getProductsByCategory(selectedCategory)
-    : mockProducts;
+    ? allProducts.filter((p) => p.category === selectedCategory)
+    : allProducts;
 
   return (
     <div className="min-h-screen bg-[var(--off-white)] dark:bg-gray-900">
