@@ -9,14 +9,12 @@ interface Props {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 const CATEGORIES = [
-  { value: 'wellness', label: 'Wellness' },
-  { value: 'beauty', label: 'Beauty' },
-  { value: 'fitness', label: 'Fitness' },
-  { value: 'sexual-wellbeing', label: 'Sexual Wellbeing' },
-  { value: 'sustainability', label: 'Sustainability' },
-  { value: 'nutrition', label: 'Nutrition' },
-  { value: 'mental-health', label: 'Mental Health' },
-  { value: 'unknown', label: 'Da classificare (AI)' },
+  { value: 'Wellbeing', label: '🌿 Wellbeing', desc: 'Benessere olistico, sonno, relax' },
+  { value: 'Nutrition', label: '🥗 Nutrition', desc: 'Integratori, superfood, dieta' },
+  { value: 'Fitness', label: '💪 Fitness', desc: 'Allenamento, attrezzi, recupero' },
+  { value: 'Mindset', label: '🧠 Mindset', desc: 'Crescita personale, stress, meditazione' },
+  { value: 'Productivity', label: '🎯 Productivity', desc: 'Focus, tempo, organizzazione' },
+  { value: 'Wealth', label: '💰 Wealth', desc: 'Investimenti, risparmio, side hustle' },
 ];
 
 const PROGRAMS = [
@@ -36,13 +34,13 @@ interface CandidateRow {
 export default function AddCandidatesForm({ onSuccess }: Props) {
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<CandidateRow[]>([
-    { name: '', affiliateLink: '', category: 'unknown', affiliateProgram: 'clickbank' },
+    { name: '', affiliateLink: '', category: 'Wellbeing', affiliateProgram: 'clickbank' },
   ]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
 
   const addRow = () => {
-    setRows([...rows, { name: '', affiliateLink: '', category: 'unknown', affiliateProgram: 'clickbank' }]);
+    setRows([...rows, { name: '', affiliateLink: '', category: 'Wellbeing', affiliateProgram: 'clickbank' }]);
   };
 
   const removeRow = (index: number) => {
@@ -95,7 +93,7 @@ export default function AddCandidatesForm({ onSuccess }: Props) {
           message: `${data.summary.created} candidati inseriti con successo!`,
         });
         // Reset form
-        setRows([{ name: '', affiliateLink: '', category: 'unknown', affiliateProgram: 'clickbank' }]);
+        setRows([{ name: '', affiliateLink: '', category: 'Wellbeing', affiliateProgram: 'clickbank' }]);
         onSuccess();
       } else {
         setResult({ success: false, message: data.error || 'Errore nell\'inserimento.' });
@@ -141,7 +139,7 @@ export default function AddCandidatesForm({ onSuccess }: Props) {
       </div>
 
       <p className="text-sm mb-4" style={{ color: 'var(--gray-400)' }}>
-        Incolla i link affiliate. Il nome e' opzionale (verra' estratto dall&apos;URL). La categoria &quot;Da classificare&quot; verra' determinata dall&apos;AI durante l&apos;analisi.
+        Incolla i link affiliate e scegli la <strong>macro-categoria</strong>. Il nome e' opzionale (verra' estratto dall&apos;URL). La categoria viene usata per assegnare automaticamente il prodotto a guide, percorsi e wizard del sito.
       </p>
 
       {/* Rows */}
