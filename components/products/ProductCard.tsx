@@ -39,7 +39,7 @@ export function ProductCard({ product, featured = false, compact = false }: Prod
             <Button
               variant="affiliate"
               size="sm"
-              href={product.affiliateLink}
+              href={product.affiliateLink || undefined}
               onClick={(e) => {
                 if (product.affiliateLink) {
                   e.preventDefault();
@@ -81,7 +81,7 @@ export function ProductCard({ product, featured = false, compact = false }: Prod
           <Button
             variant="affiliate"
             size="sm"
-            href={product.affiliateLink}
+            href={product.affiliateLink || undefined}
             onClick={(e) => {
               if (product.affiliateLink) {
                 e.preventDefault();
