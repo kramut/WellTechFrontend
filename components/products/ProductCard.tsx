@@ -8,10 +8,10 @@ interface ProductCardProps {
     id: number;
     name: string;
     category: string;
-    description?: string;
-    price?: number;
-    imageUrl?: string;
-    affiliateLink?: string;
+    description?: string | null;
+    price?: number | string | null;
+    imageUrl?: string | null;
+    affiliateLink?: string | null;
   };
   featured?: boolean;
   compact?: boolean;
